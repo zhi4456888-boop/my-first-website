@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>班级抽奖与抽罚系统</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- 登录界面 -->
+    <div id="loginPage" class="page active">
+        <div class="container">
+            <h1>班级抽奖与抽罚系统</h1>
+            <div class="login-form">
+                <h2>用户登录</h2>
+                <div class="form-group">
+                    <label>用户类型：</label>
+                    <select id="userType">
+                        <option value="student">学生</option>
+                        <option value="teacher">老师</option>
+                    </select>
+                </div>
+                <div class="form-group" id="studentLogin">
+                    <label>姓名：</label>
+                    <input type="text" id="studentName" placeholder="请输入姓名">
+                </div>
+                <div class="form-group" id="studentIdGroup">
+                    <label>学号：</label>
+                    <input type="text" id="studentId" placeholder="请输入学号">
+                </div>
+                <div class="form-group" id="teacherLogin" style="display: none;">
+                    <label>账号：</label>
+                    <input type="text" id="teacherAccount" placeholder="请输入账号">
+                </div>
+                <div class="form-group" id="teacherPasswordGroup" style="display: none;">
+                    <label>密码：</label>
+                    <input type="password" id="teacherPassword" placeholder="请输入密码">
+                </div>
+                <div class="form-group">
+                    <label>上传班级名单文件（classmates.txt）：</label>
+                    <input type="file" id="classmatesFile" accept=".txt">
+                    <small>首次使用需要上传班级名单文件</small>
+                </div>
+                <button onclick="handleLogin()" class="btn btn-primary">登录</button>
+                <div id="loginError" class="error-message"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 学生界面 -->
+    <div id="studentPage" class="page">
+        <div class="container">
+            <div class="header">
+                <h1>欢迎，<span id="studentDisplayName"></span>！</h1>
+                <button onclick="logout()" class="btn btn-secondary">退出登录</button>
+            </div>
+            
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('reward')">填写奖励</button>
+                <button class="tab-btn" onclick="switchTab('punishment')">填写惩罚</button>
+            </div>
+
+            <div id="rewardTab" class="tab-content active">
+                <div class="card">
+                    <h2>填写奖励</h2>
+                    <div class="status-info">
+                        <p>剩余填写次数：<span id="studentRewardCount">1</span></p>
+                        <p>当前剩余奖励数量：<span id="studentRemainingRewards">0</span></p>
+                    </div>
+                    <div class="form-group">
+                        <label>奖励内容：</label>
+                        <textarea id="studentReward" rows="4" placeholder="请输入奖励内容"></textarea>
+                    </div>
+                    <button onclick="submitStudentReward()" class="btn btn-primary" id="submitRewardBtn">提交奖励</button>
+                    <div id="rewardMessage" class="message"></div>
+                </div>
+            </div>
+
+            <div id="punishmentTab" class="tab-content">
+                <div class="card">
+                    <h2>填写惩罚</h2>
+                    <div class="status-info">
+                        <p>剩余填写次数：<span id="studentPunishmentCount">1</span></p>
+                        <p>当前剩余惩罚数量：<span id="studentRemainingPunishments">0</span></p>
+                    </div>
+                    <div class="form-group">
+                        <label>惩罚内容：</label>
+                        <textarea id="studentPunishment" rows="4" placeholder="请输入惩罚内容"></textarea>
+                    </div>
+                    <button onclick="submitStudentPunishment()" class="btn btn-primary" id="submitPunishmentBtn">提交惩罚</button>
+                    <div id="punishmentMessage" class="message"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 老师界面 -->
+    <div id="teacherPage" class="page">
+        <div class="container">
+            <div class="header">
+                <h1>老师管理界面</h1>
+                <button onclick="logout()" class="btn btn-secondary">退出登录</button>
+            </div>
+
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTeacherTab('fill')">填写内容</button>
+                <button class="tab-btn" onclick="switchTeacherTab('draw')">抽奖/抽罚</button>
+                <button class="tab-btn" onclick="switchTeacherTab('manage')">管理</button>
+            </div>
+
+            <!-- 填写内容标签页 -->
+            <div id="fillTab" class="tab-content active">
+                <div class="card">
+                    <h2>填写奖励/惩罚</h2>
+                    <div class="form-group">
+                        <label>填写人姓名：</label>
+                        <input type="text" id="teacherFillerName" placeholder="请输入填写人姓名">
+                    </div>
+                    <div class="form-group">
+                        <label>类型：</label>
+                        <select id="teacherContentType">
+                            <option value="reward">奖励</option>
+                            <option value="punishment">惩罚</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>内容：</label>
+                        <textarea id="teacherContent" rows="4" placeholder="请输入内容"></textarea>
+                    </div>
+                    <button onclick="submitTeacherContent()" class="btn btn-primary">提交</button>
+                    <div id="teacherFillMessage" class="message"></div>
+                </div>
+            </div>
+
+            <!-- 抽奖/抽罚标签页 -->
+            <div id="drawTab" class="tab-content">
+                <div class="card">
+                    <h2>抽奖/抽罚</h2>
+                    <div class="status-info" style="margin-bottom: 20px;">
+                        <p>当前剩余奖励数量：<span id="teacherRemainingRewards">0</span></p>
+                        <p>当前剩余惩罚数量：<span id="teacherRemainingPunishments">0</span></p>
+                    </div>
+                    <div class="draw-controls">
+                        <button onclick="drawReward()" class="btn btn-success">抽奖</button>
+                        <button onclick="drawPunishment()" class="btn btn-danger">抽罚</button>
+                    </div>
+                    <div id="drawResult" class="draw-result">
+                        <div id="drawContent" class="draw-content"></div>
+                        <button onclick="confirmDraw()" class="btn btn-primary" id="confirmBtn" style="display: none;">确认</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 管理标签页 -->
+            <div id="manageTab" class="tab-content">
+                <div class="card">
+                    <h2>管理功能</h2>
+                    <div class="form-group">
+                        <label>重置密码：</label>
+                        <input type="password" id="resetPassword" placeholder="请输入管理员密码">
+                    </div>
+                    <button onclick="resetAllCounts()" class="btn btn-warning">重置所有人的剩余填写次数</button>
+                    <div id="manageMessage" class="message"></div>
+                    
+                    <div class="stats-section">
+                        <h3>统计信息</h3>
+                        <p>当前奖励数量：<span id="rewardCount">0</span></p>
+                        <p>当前惩罚数量：<span id="punishmentCount">0</span></p>
+                    </div>
+                    
+                    <div class="stats-section" style="margin-top: 30px;">
+                        <h3>批量导入</h3>
+                        <div class="form-group">
+                            <label>上传JSON文件批量导入奖励和惩罚：</label>
+                            <input type="file" id="importJsonFile" accept=".json">
+                            <small>JSON格式：{"rewards": [{"content": "奖励内容", "filler": "填写人"}], "punishments": [{"content": "惩罚内容", "filler": "填写人"}]}</small>
+                        </div>
+                        <button onclick="importFromJson()" class="btn btn-primary">导入</button>
+                        <div id="importMessage" class="message"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,31 @@
+{
+  "rewards": [
+    {
+      "content": "免作业一次",
+      "filler": "张三"
+    },
+    {
+      "content": "获得小礼品一份",
+      "filler": "李四"
+    },
+    {
+      "content": "可以自由选择座位一天",
+      "filler": "王五"
+    }
+  ],
+  "punishments": [
+    {
+      "content": "值日一周",
+      "filler": "赵六"
+    },
+    {
+      "content": "背诵课文一篇",
+      "filler": "钱七"
+    },
+    {
+      "content": "帮助老师整理资料",
+      "filler": "孙八"
+    }
+  ]
+}
+
