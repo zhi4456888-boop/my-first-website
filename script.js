@@ -12,6 +12,9 @@ let currentUserType = null;
 
 // 初始化
 document.addEventListener('DOMContentLoaded', function() {
+    // 自动加载根目录下的 classmates.json
+    autoLoadClassmatesJson();
+    
     // 加载已存储的班级名单
     loadClassmatesFromStorage();
     
@@ -53,8 +56,64 @@ document.addEventListener('DOMContentLoaded', function() {
     checkLoginStatus();
 });
 
-// 解析班级名单文件
+// 自动加载根目录下的 classmates.json
+async function autoLoadClassmatesJson() {
+    try {
+        const response = await fetch('classmates.json');
+        if (response.ok) {
+            const jsonData = await response.json();
+            parseClassmatesJson(jsonData);
+        } else {
+            // 文件不存在，静默失败，使用已存储的数据或等待用户上传
+            console.log('未找到 classmates.json 文件，请手动上传班级名单');
+        }
+    } catch (error) {
+        // 网络错误或文件不存在，静默失败
+        console.log('自动加载 classmates.json 失败，请手动上传班级名单');
+    }
+}
+
+// 解析班级名单JSON格式
+function parseClassmatesJson(jsonData) {
+    let classmates = [];
+    
+    // 支持两种JSON格式：
+    // 1. 数组格式：[{"name": "张三", "id": "2021001"}, ...]
+    // 2. 对象格式：{"students": [{"name": "张三", "id": "2021001"}, ...]}
+    if (Array.isArray(jsonData)) {
+        classmates = jsonData;
+    } else if (jsonData.students && Array.isArray(jsonData.students)) {
+        classmates = jsonData.students;
+    } else if (jsonData.classmates && Array.isArray(jsonData.classmates)) {
+        classmates = jsonData.classmates;
+    }
+    
+    // 验证并格式化数据
+    const validClassmates = classmates.filter(item => {
+        return item && item.name && (item.id || item.studentId || item.student_id);
+    }).map(item => ({
+        name: item.name,
+        id: item.id || item.studentId || item.student_id
+    }));
+    
+    if (validClassmates.length > 0) {
+        localStorage.setItem(STORAGE_KEYS.CLASSMATES, JSON.stringify(validClassmates));
+        console.log('班级名单自动加载成功！共 ' + validClassmates.length + ' 名学生');
+    }
+}
+
+// 解析班级名单文件（支持TXT和JSON格式）
 function parseClassmatesFile(content) {
+    // 尝试解析为JSON
+    try {
+        const jsonData = JSON.parse(content);
+        parseClassmatesJson(jsonData);
+        return;
+    } catch (e) {
+        // 不是JSON格式，按TXT格式处理
+    }
+    
+    // 按TXT格式解析（原有逻辑）
     const lines = content.split('\n').filter(line => line.trim());
     const classmates = [];
     
