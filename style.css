@@ -9,6 +9,8 @@ body {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     min-height: 100vh;
     padding: 20px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 .page {
@@ -27,6 +29,7 @@ body {
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
     padding: 40px;
     animation: fadeIn 0.5s;
+    width: 100%;
 }
 
 @keyframes fadeIn {
@@ -99,6 +102,29 @@ h3 {
     border-radius: 8px;
     font-size: 16px;
     transition: border-color 0.3s;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+/* 防止iOS自动缩放输入框 */
+.form-group input[type="text"],
+.form-group input[type="password"],
+.form-group textarea {
+    font-size: 16px;
+}
+
+/* 文件上传输入框样式优化 */
+.form-group input[type="file"] {
+    padding: 10px;
+    border: 2px dashed #ddd;
+    background: #f9f9f9;
+    cursor: pointer;
+}
+
+.form-group input[type="file"]:hover {
+    border-color: #667eea;
+    background: #f0f0ff;
 }
 
 .form-group input:focus,
@@ -128,6 +154,9 @@ h3 {
     cursor: pointer;
     transition: all 0.3s;
     font-weight: 500;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    min-height: 44px; /* 触摸友好的最小高度 */
 }
 
 .btn-primary {
@@ -329,5 +358,224 @@ h3 {
     font-weight: 600;
     color: #667eea;
     font-size: 20px;
+}
+
+/* 移动端响应式设计 */
+@media screen and (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+    
+    .container {
+        padding: 20px;
+        border-radius: 10px;
+    }
+    
+    h1 {
+        font-size: 1.5em;
+        margin-bottom: 20px;
+    }
+    
+    .header h1 {
+        font-size: 1.3em;
+    }
+    
+    h2 {
+        font-size: 1.3em;
+        margin-bottom: 15px;
+    }
+    
+    h3 {
+        font-size: 1.1em;
+    }
+    
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+    
+    .header .btn {
+        width: 100%;
+    }
+    
+    .tabs {
+        flex-wrap: wrap;
+        gap: 5px;
+        margin-bottom: 20px;
+    }
+    
+    .tab-btn {
+        padding: 10px 15px;
+        font-size: 14px;
+        flex: 1;
+        min-width: 0;
+    }
+    
+    .card {
+        padding: 20px;
+    }
+    
+    .status-info {
+        padding: 12px;
+    }
+    
+    .status-info p {
+        font-size: 14px;
+        line-height: 1.6;
+    }
+    
+    .form-group {
+        margin-bottom: 15px;
+    }
+    
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 14px;
+        font-size: 16px; /* 防止iOS自动缩放 */
+    }
+    
+    .form-group input[type="file"] {
+        padding: 12px;
+        font-size: 14px;
+    }
+    
+    .form-group label {
+        font-size: 14px;
+        margin-bottom: 6px;
+    }
+    
+    .form-group small {
+        font-size: 11px;
+    }
+    
+    .btn {
+        padding: 14px 20px;
+        font-size: 16px;
+        width: 100%;
+    }
+    
+    .btn-success,
+    .btn-danger {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+    
+    .draw-controls {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .draw-content {
+        padding: 25px 20px;
+        font-size: 18px;
+        min-height: 120px;
+    }
+    
+    .draw-content.empty {
+        font-size: 16px;
+    }
+    
+    #confirmBtn {
+        width: 100%;
+        padding: 14px 20px;
+    }
+    
+    .stats-section {
+        margin-top: 20px;
+        padding-top: 15px;
+    }
+    
+    .stats-section p {
+        font-size: 14px;
+    }
+    
+    .stats-section span {
+        font-size: 18px;
+    }
+    
+    .message {
+        padding: 10px;
+        font-size: 14px;
+    }
+    
+    .error-message {
+        padding: 10px;
+        font-size: 14px;
+    }
+}
+
+/* 超小屏幕优化 */
+@media screen and (max-width: 480px) {
+    body {
+        padding: 5px;
+    }
+    
+    .container {
+        padding: 15px;
+        border-radius: 8px;
+    }
+    
+    h1 {
+        font-size: 1.3em;
+        margin-bottom: 15px;
+    }
+    
+    .header h1 {
+        font-size: 1.2em;
+    }
+    
+    h2 {
+        font-size: 1.2em;
+    }
+    
+    .card {
+        padding: 15px;
+    }
+    
+    .tab-btn {
+        padding: 8px 10px;
+        font-size: 13px;
+    }
+    
+    .draw-content {
+        padding: 20px 15px;
+        font-size: 16px;
+    }
+    
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 12px;
+    }
+}
+
+/* 横屏模式优化 */
+@media screen and (max-width: 768px) and (orientation: landscape) {
+    .container {
+        padding: 15px;
+    }
+    
+    h1 {
+        font-size: 1.3em;
+        margin-bottom: 15px;
+    }
+    
+    .card {
+        padding: 15px;
+    }
+}
+
+/* 防止iOS输入框自动缩放 */
+@supports (-webkit-touch-callout: none) {
+    .form-group input[type="text"],
+    .form-group input[type="password"],
+    .form-group textarea,
+    .form-group select {
+        font-size: 16px !important;
+    }
 }
 
